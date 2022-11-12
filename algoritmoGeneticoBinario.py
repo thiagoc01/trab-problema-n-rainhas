@@ -90,7 +90,7 @@ def numeroAtaques(T):
 
             posicaoDamaAnalisada = int(T[a : b], 2)
 
-            if posicaoDama == posicaoDamaAnalisada:     # Atauqe na linha
+            if posicaoDama == posicaoDamaAnalisada:     # Ataque na linha
                 qtdAtaques += 1
 
             elif abs(posicaoDamaAnalisada - posicaoDama) == abs( (fim  /log2(numDamas) - 1) - ( ( b / int(log2(numDamas) ) ) - 1) ):        # Ataque na diagonal
@@ -263,10 +263,12 @@ def retornaMelhorIndividuo(P):
     pos = 1
     posMelhor = 0
     melhor = P[0]
+    somasIndividuos = maior
 
     for individuo in P[1 : ]:
     
         avaliacao = avaliaTabuleiro(individuo)
+        somasIndividuos += avaliacao
 
         if avaliacao > maior:
             melhor = P[pos]
@@ -275,7 +277,7 @@ def retornaMelhorIndividuo(P):
 
         pos += 1
 
-    return melhor, maior, posMelhor
+    return melhor, maior, posMelhor, somasIndividuos
 
 
 
@@ -286,14 +288,17 @@ def aplicaAlgoritmoGenetico(nDamas, tamPopulacao, nGeracoes, probCrossover, prob
     populacaoInicial = geraPopulacaoInicial(nDamas, tamPopulacao)
     melhoresIndividuos = []
     melhoresNotas = []
+    mediasIndividuos = []
     melhorNotaAtual = 0
 
     while geracoesGeradas < nGeracoes:
 
         novaPopulacao = []
-        melhorIndividuoAtual, melhorNotaAtual, pos = retornaMelhorIndividuo(populacaoInicial)
+        melhorIndividuoAtual, melhorNotaAtual, pos, somasIndividuos = retornaMelhorIndividuo(populacaoInicial)
         melhoresIndividuos.append(melhorIndividuoAtual)
         melhoresNotas.append(melhorNotaAtual)
+
+        mediasIndividuos.append(somasIndividuos / tamPopulacao)
 
         if usaElitismo:
             
@@ -311,7 +316,7 @@ def aplicaAlgoritmoGenetico(nDamas, tamPopulacao, nGeracoes, probCrossover, prob
 
         geracoesGeradas += 1        
 
-    return melhoresIndividuos, melhoresNotas
+    return melhoresIndividuos, melhoresNotas, mediasIndividuos
 
 def bestUnitPlot(x,y):
     plt.plot(x,y)
@@ -320,18 +325,27 @@ def bestUnitPlot(x,y):
     plt.title("Generations x adaptation function of best unit")
     plt.show()
 
+def bestUnitMeanPlot(x,y):
+    plt.plot(x,y)
+    plt.xlabel('Generations')
+    plt.ylabel('Average')
+    plt.title("Generations x adaptation function average")
+    plt.show()
+
 def main():
 
     global numDamas
     numDamas = 8
 
-    a, b = aplicaAlgoritmoGenetico(8, 50, 2e3, 0.75, 0.05, True)
+    a, b, c = aplicaAlgoritmoGenetico(8, 50, 2e3, 0.75, 0.03, True)
 
     # print(f"{a}\n\n{b}")
     x= list(range(0,len(a)))
     y= b
     bestUnitPlot(x,y)
-    #beatUnitMeanPlot()
+    x= list(range(0,len(c)))
+    y= c
+    bestUnitMeanPlot(x, y)
 
 if __name__ == "__main__":
     main()
