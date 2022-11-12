@@ -1,5 +1,7 @@
 import random
 from math import log2
+import matplotlib.pyplot as plt
+
 
 '''
     Um tabuleiro é representado como uma string binária onde há N substrings de tamanho log_2(N).
@@ -311,16 +313,25 @@ def aplicaAlgoritmoGenetico(nDamas, tamPopulacao, nGeracoes, probCrossover, prob
 
     return melhoresIndividuos, melhoresNotas
 
+def bestUnitPlot(x,y):
+    plt.plot(x,y)
+    plt.xlabel('Generations')
+    plt.ylabel('Best grades')
+    plt.title("Generations x adaptation function of best unit")
+    plt.show()
 
 def main():
 
     global numDamas
     numDamas = 8
 
-    a, b = aplicaAlgoritmoGenetico(8, 50, 100, 0.7, 0.01, True)
+    a, b = aplicaAlgoritmoGenetico(8, 50, 2e3, 0.75, 0.05, True)
 
-    print(f"{a}\n\n{b}")
-
+    # print(f"{a}\n\n{b}")
+    x= list(range(0,len(a)))
+    y= b
+    bestUnitPlot(x,y)
+    #beatUnitMeanPlot()
 
 if __name__ == "__main__":
     main()
