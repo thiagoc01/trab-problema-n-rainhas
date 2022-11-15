@@ -300,7 +300,7 @@ def main():
 
     a, b, c = aplicaAlgoritmoGenetico(8, 50, 2e3, 0.75, 0.03, True)
 
-    # print(f"{a}\n\n{b}")
+    print(f"{a[-1]}\n\n{b[-1]}")
     x= list(range(0,len(a)))
     y= b
     bestUnitPlot(x,y)
